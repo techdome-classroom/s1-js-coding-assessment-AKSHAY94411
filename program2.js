@@ -1,32 +1,40 @@
 const decodeTheRing = function (s, p) {
 
     // write your code hereclass Solution:
-    def getTotalIsles(self, grid: list[list[str]]) -> int:
-        # Helper function to perform DFS and mark visited land cells
-        def dfs(i, j):
-            # Check if the cell is out of bounds or water
-            if i < 0 or i >= len(grid) or j < 0 or j >= len(grid[0]) or grid[i][j] == 'W':
-                return
-            # Mark the cell as visited by setting it to 'W'
-            grid[i][j] = 'W'
-            # Explore the neighboring cells (up, down, left, right)
-            dfs(i + 1, j)
-            dfs(i - 1, j)
-            dfs(i, j + 1)
-            dfs(i, j - 1)
+    const m = s.length;
+    const n = p.length;
+    
+    // Initialize a DP table with false values
+    const dp = Array(m + 1).fill(false).map(() => Array(n + 1).fill(false));
+    dp[0][0] = true; // Empty pattern matches empty string
+    
+    // Fill in the table for patterns starting with '*' to match empty prefixes of s
+    for (let j = 1; j <= n; j++) {
+        if (p[j - 1] === '*') {
+            dp[0][j] = dp[0][j - 1];
+        }
+    }
+    
+    // Fill the DP table
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (p[j - 1] === '*') {
+                // '*' can match zero or more characters
+                dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
+            } else if (p[j - 1] === '?' || p[j - 1] === s[i - 1]) {
+                // '?' matches one character, or characters match directly
+                dp[i][j] = dp[i - 1][j - 1];
+            }
+        }
+    }
+    
+    // The answer is whether the entire message and pattern match
+    return dp[m][n];
+};
 
-        # Count of islands
-        island_count = 0
+module.exports = decodeTheRing;
 
-        # Traverse each cell in the grid
-        for i in range(len(grid)):
-            for j in range(len(grid[0])):
-                # If the cell is land, it's a new island
-                if grid[i][j] == 'L':
-                    island_count += 1
-                    dfs(i, j)  # Perform DFS to mark all connected land cells
-
-        return island_count
+    
 
 
   };
